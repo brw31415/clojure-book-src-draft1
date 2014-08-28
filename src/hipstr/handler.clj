@@ -8,6 +8,7 @@
             [compojure.route :as route]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.rotor :as rotor]
+            [taoensso.timbre.appenders.rolling :as rolling]
             [selmer.parser :as parser]
             [environ.core :refer [env]]
             [cronj.core :as cronj]))
@@ -22,17 +23,14 @@
    an app server such as Tomcat
    put any initialization code here"
   []
-  (timbre/set-config!
-    [:appenders :rotor]
-    {:min-level :info
-     :enabled? true
-     :async? false ; should be always false for rotor
-     :max-message-per-msecs nil
-     :fn rotor/appender-fn})
+  (timbre/set-config! [:appenders :standard-out :min-level] :info)
 
   (timbre/set-config!
-    [:shared-appender-config :rotor]
-    {:path "hipstr.log" :max-size (* 512 1024) :backlog 10})
+   [:appenders :rolling]
+   (rolling/make-rolling-appender {:min-level :info}))
+
+  (timbre/set-config!
+   [:shared-appender-config :rolling :path] "logs/hipstr.log")
 
   (if (env :dev) (parser/cache-off!))
   ;;start the expired session cleanup job
