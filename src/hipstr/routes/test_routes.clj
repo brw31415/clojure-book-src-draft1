@@ -13,7 +13,7 @@
     (str result)))
 
 (defroutes test-routes
-  (GET "/req" request (render-request request))
+  (GET "/req" request (render-request-val request))
   ;(GET "/req/:val" [val] (str val)) ;no access to the full request map
   (GET "/req/:val" [val :as full-req] (str val "<br>" full-req)) ; use :as to get access to full request map
   (GET "/req/key/:key" [key :as request] (render-request-val request key))

@@ -15,8 +15,9 @@
             [cronj.core :as cronj]))
 
 (defroutes base-routes
-  (route/resources "/")
-  (route/not-found "Not Found"))
+  (route/resources "/" {:root "public"})
+  (route/not-found "Not Found")
+  (route/files "/downloads" {:root "downloads"}))
 
 (defn init
   "init will be called once when
