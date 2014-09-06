@@ -25,7 +25,7 @@
    an app server such as Tomcat
    put any initialization code here"
   []
-  (timbre/set-config! [:appenders :standard-out :min-level] :info)
+  #_(timbre/set-config! [:appenders :standard-out :min-level] :info)
 
   (timbre/set-config!
    [:appenders :rolling]

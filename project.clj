@@ -10,7 +10,8 @@
                  [markdown-clj "0.9.47"]
                  [environ "0.5.0"]
                  [im.chit/cronj "1.0.1"]
-                 [noir-exception "0.2.2"]]
+                 [noir-exception "0.2.2"]
+                 [com.novemberain/validateur "2.3.1"]]
 
   :repl-options {:init-ns hipstr.repl}
   :jvm-opts ["-server"]
