@@ -22,7 +22,6 @@
   (validation-set
    (length-of :password
               :within (range 8 101)
-              :blank-message "is a required field."
               :message-fn (fn [type m attribute & args]
                             (if (= type :blank)
                               "is a required field"
