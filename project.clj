@@ -2,6 +2,7 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.6.0"]
+                 [postgresql/postgresql "9.1-901-1.jdbc4"]
                  [lib-noir "0.8.6"]
                  [ring-server "0.3.1"]
                  [selmer "0.6.9"]
@@ -11,15 +12,26 @@
                  [environ "0.5.0"]
                  [im.chit/cronj "1.0.1"]
                  [noir-exception "0.2.2"]
-                 [com.novemberain/validateur "2.3.1"]]
+                 [com.novemberain/validateur "2.3.1"]
+                 [migratus "0.7.0"]]                   ;used for db migrations
 
   :repl-options {:init-ns hipstr.repl}
   :jvm-opts ["-server"]
   :plugins [[lein-ring "0.8.10"]
-            [lein-environ "0.5.0"]]
+            [lein-environ "0.5.0"]
+            [migratus-lein "0.1.0"]]
   :ring {:handler hipstr.handler/app
          :init    hipstr.handler/init
          :destroy hipstr.handler/destroy}
+  :migratus {
+             :store         :database
+             :migration-dir "migrations"
+             :migration-table-name "_migrations"
+             :db            {:classname   "org.postgresql.Driver"
+                             :subprotocol "postgresql"
+                             :subname     "//localhost/postgres"
+                             :user        "hipstr"
+                             :password    "p455w0rd"}}
   :profiles
   {:uberjar {:aot :all}
    :production {:ring {:open-browser? false
