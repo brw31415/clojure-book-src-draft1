@@ -1,5 +1,6 @@
 (ns hipstr.handler
   (:require [compojure.core :refer [defroutes]]
+            [hipstr.routes.albums :refer [album-routes]]
             [hipstr.routes.home :refer [home-routes]]
             [hipstr.routes.test-routes :refer [test-routes]]
             [hipstr.middleware :refer [load-middleware]]
@@ -49,7 +50,7 @@
 
 (def app (app-handler
            ;; add your application routes here
-           [home-routes base-routes test-routes]
+           [album-routes home-routes base-routes test-routes]
            ;; add custom middleware here
            :middleware (load-middleware)
            ;; timeout sessions after 30 minutes

@@ -1,0 +1,12 @@
+{% extends "templates/base.html" %}
+{% block content %}
+<h1>{{artist}}</h1>
+<ol class="albums">
+    {% for a in albums %}
+    <li>
+        <div class="album-name">{{a.name}}</div>
+        <div class="release-date">{{a.release_date}}</div>
+    </li>
+    {% endfor %}
+</ol>
+{% endblock %}

@@ -20,7 +20,7 @@
       (layout/render "signup.html" (assoc user :errors errors))
       (do
         (u/add-user! user)
-        (response/redirect "/signup-success")))))
+        (response/redirect "/albums/recently-added")))))
 
 (defn signup-page []
   (layout/render "signup.html"))

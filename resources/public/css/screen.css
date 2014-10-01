@@ -9,3 +9,11 @@ body {
   padding-left: 20px;
   color: red;
 }
+
+.albums {
+  list-style: none;
+}
+
+.albums li {
+  margin-bottom: 8px;
+}
