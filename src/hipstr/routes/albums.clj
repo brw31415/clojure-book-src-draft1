@@ -1,7 +1,6 @@
 (ns hipstr.routes.albums
   (:require [compojure.core :refer :all]
             [hipstr.layout :as layout]
-            [ring.util.response :as response]
             [hipstr.models.album-model :as album]))
 
 (defn recently-added-page
