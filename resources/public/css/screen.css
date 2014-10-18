@@ -17,3 +17,7 @@ body {
 .albums li {
   margin-bottom: 8px;
 }
+
+.add-album .submit {
+  text-align: right;
+}

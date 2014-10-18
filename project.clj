@@ -13,9 +13,10 @@
                  [im.chit/cronj "1.0.1"]
                  [noir-exception "0.2.2"]
                  [com.novemberain/validateur "2.3.1"]
-                 [migratus "0.7.0"]                     ;used for db migrations
-                 [yesql "0.5.0-beta2"]                  ;a library for using SQL
-                 [crypto-password "0.1.3"]]             ;used for encrypting our passwords
+                 [migratus "0.7.0"]                     ; used for db migrations
+                 [yesql "0.5.0-beta2"]                  ; a library for using SQL
+                 [clj-time "0.8.0"]                     ; a library for sane date/time goodness
+                 [crypto-password "0.1.3"]]             ; used for encrypting our passwords
 
   :repl-options {:init-ns hipstr.repl}
   :jvm-opts ["-server"]
