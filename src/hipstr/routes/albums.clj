@@ -19,15 +19,15 @@
   "Handles the add-album form on the recently-added page."
   [album]
   (let [errors (v/validate-new-album album)
-        ctx (if (not-empty errors)
-              {:validation-errors errors :new album}
-              (try
-                (album/add-album! album)
-                {:new {} :success true}
-                (catch Exception e
-                  (timbre/error e)
-                  {:new album :error "Oh snap! We lost the album. Try it again?"})))
-        ctx (assoc ctx :albums (album/get-recently-added))]
+        form-ctx (if (not-empty errors)
+                   {:validation-errors errors :new album}
+                   (try
+                     (album/add-album! album)
+                     {:new {} :success true}
+                     (catch Exception e
+                       (timbre/error e)
+                       {:new album :error "Oh snap! We lost the album. Try it again?"})))
+        ctx (merge {:add-form form-ctx} {:albums (album/get-recently-added)})]
     (render-recently-added-page ctx)))
 
 (defn albums-by-artist-page
