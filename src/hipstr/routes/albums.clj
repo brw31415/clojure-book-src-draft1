@@ -5,25 +5,30 @@
             [hipstr.models.album-model :as album]
             [taoensso.timbre :as timbre]))
 
+(defn render-recently-added-page
+  "Simply renders the recently added page with the given context."
+  [ctx]
+  (layout/render "albums/recently-added.html" ctx))
+
 (defn recently-added-page
   "Renders out the recently-added page."
   []
-  (layout/render "albums/recently-added.html" {:albums (album/get-recently-added)}))
+  (render-recently-added-page {:albums (album/get-recently-added)}))
 
 (defn recently-added-submit
   "Handles the add-album form on the recently-added page."
   [album]
   (let [errors (v/validate-new-album album)
-        albums (album/get-recently-added)
-        ctx {:albums albums :errors errors :new (if (empty? errors) {} album) :success true}]
-    (if (not (empty? errors))
-      (layout/render "albums/recently-added.html" ctx)
-      (try
-        (album/add-album! album)
-        (layout/render "albums/recently-added.html" ctx)
-        (catch Exception e
-          (timbre/error e)
-          (layout/render "albums/recently-added.html" (merge ctx {:success false :error (.getMessage e)})))))))
+        ctx (if (not-empty errors)
+              {:validation-errors errors :new album}
+              (try
+                (album/add-album! album)
+                {:new {} :success true}
+                (catch Exception e
+                  (timbre/error e)
+                  {:new album :error "Oh snap! We lost the album. Try it again?"})))
+        ctx (assoc ctx :albums (album/get-recently-added))]
+    (render-recently-added-page ctx)))
 
 (defn albums-by-artist-page
   "Renders a page displaying the discography for a given artist."

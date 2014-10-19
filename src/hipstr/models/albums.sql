@@ -18,7 +18,7 @@ ORDER BY alb.release_date DESC
 -- name: insert-album<!
 -- Adds the album for the given artist to the database
 INSERT INTO albums (artist_id, name, release_date)
-VALUES :artist_id, :album_name, :release_date
+VALUES (:artist_id, :album_name, date(:release_date))
 
 -- name: get-album-by-name
 -- Fetches the specific album from the database for a particular artist.

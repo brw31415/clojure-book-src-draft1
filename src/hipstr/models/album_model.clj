@@ -8,13 +8,17 @@
 
 (defn add-album!
   "Adds a new album to the database."
-  [album]
-  (timbre/info album)
-  (let [artist-info {:artist_name (:artist_name album)}
-        artist (or (get-artist-by-name artist-info)
-                   (insert-artist<! artist-info))
-        album-info (assoc album :artist_id (:artist_id artist))]
-    (timbre/info artist)
-    (timbre/info album-info)
-    (or (get-album-by-name album-info)
-        (insert-album<! album-info))))
+  ([album]
+   (add-album! album db-spec))
+
+  ([album tx]
+   (let [artist-info {:artist_name (:artist_name album)}
+
+         ; fetch or insert the artist record
+         artist (or (first (get-artist-by-name artist-info {:connection tx}))
+                    (insert-artist<! artist-info {:connection tx}))
+
+         album-info (assoc album :artist_id (:artist_id artist))]
+
+     (or (first (get-album-by-name album-info {:connection tx}))
+         (insert-album<! album-info {:connextion tx})))))
