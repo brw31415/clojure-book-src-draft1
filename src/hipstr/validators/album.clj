@@ -38,6 +38,7 @@
                                            :message release-date-invalid-message))))
 
 (def album-validations
+  "Returns a validation set, ensuring an artist_name and album_name are present."
   (validation-set
    (presence-of :artist_name
                 :message "Artist is required.")
@@ -45,4 +46,6 @@
                 :message "Album is required.")))
 
 (def validate-new-album
+  "Retruns a function which runs an input map through the gauntlet of validation-sets,
+   ensuring our artist and album meet the requirements."
   (compose-sets release-date-validations album-validations))

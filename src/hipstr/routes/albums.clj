@@ -16,7 +16,9 @@
   (render-recently-added-page {:albums (album/get-recently-added)}))
 
 (defn recently-added-submit
-  "Handles the add-album form on the recently-added page."
+  "Handles the add-album form on the recently-added page.
+   In the case of validation errors or other unexpected errors, the :new
+   key in the context will be set to the album information submitted by the user."
   [album]
   (let [errors (v/validate-new-album album)
         form-ctx (if (not-empty errors)

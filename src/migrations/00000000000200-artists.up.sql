@@ -1,8 +1,9 @@
 CREATE TABLE artists
-(artist_id     SERIAL       NOT NULL PRIMARY KEY,
+(artist_id     SERIAL       NOT NULL,
  name          VARCHAR(255) NOT NULL,
  create_date   TIMESTAMP    NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
  update_date   TIMESTAMP    NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
+ CONSTRAINT pk_artists PRIMARY KEY (artist_id),
  CONSTRAINT artist_name UNIQUE(name));
 --;;
 -- create an update trigger which updates our update_date column by calling the above function
