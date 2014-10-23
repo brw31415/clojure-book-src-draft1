@@ -21,4 +21,4 @@
      (timbre/info (str "artist: " artist))
      (timbre/info (str "album-info: " album-info))
      (or (first (get-album-by-name album-info {:connection tx}))
-         (insert-album<! album-info {:connextion tx})))))
+         (insert-album<! album-info {:connection tx})))))
