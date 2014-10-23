@@ -29,7 +29,7 @@
                      (catch Exception e
                        (timbre/error e)
                        {:new album :error "Oh snap! We lost the album. Try it again?"})))
-        ctx (merge {:add-form form-ctx} {:albums (album/get-recently-added)})]
+        ctx (merge {:form form-ctx} {:albums (album/get-recently-added)})]
     (render-recently-added-page ctx)))
 
 (defn albums-by-artist-page
