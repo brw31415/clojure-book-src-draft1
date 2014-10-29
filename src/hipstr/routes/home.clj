@@ -1,11 +1,12 @@
 (ns hipstr.routes.home
   (:require [compojure.core :refer :all]
+            [hipstr.cookies :as cookies]
             [hipstr.layout :as layout]
-            [hipstr.models.user_model :asl user]
-            [hipstr.validators.user :as v]
+            [hipstr.models.user-model :as u]
             [hipstr.util :as util]
-            [ring.util.response :as response]
-            [hipstr.models.user-model :as u]))
+            [hipstr.validators.user :as v]
+            [noir.session :as session]
+            [ring.util.response :as response]))
 
 (defn home-page []
   (layout/render
@@ -14,20 +15,39 @@
 (defn about-page []
   (layout/render "about.html"))
 
-(defn signup-page-submit [user]
+(defn login-page
+  ([]
+  (layout/render "login.html" {:username (cookies/remember-me)}))
+  ([credentials]
+   (if (u/auth-user credentials)
+     (do
+       (cookies/remember-me (if (:remember-me credentials)
+                              (:username credentials)
+                              ""))
+       (response/redirect "/albums/recently-added"))
+     (layout/render "login.html" {:invalid-credentials? true}))))
+
+(defn logout []
+  "Logs the user out of this session."
+  (u/invalidate-auth)
+  (response/redirect "/"))
+
+(defn signup-page
+  ([]
+   (layout/render "signup.html"))
+  ([user]
   (let [errors (v/validate-signup user)]
     (if (not (empty? errors))
       (layout/render "signup.html" (assoc user :errors errors))
       (do
         (u/add-user! user)
-        (response/redirect "/albums/recently-added")))))
-
-(defn signup-page []
-  (layout/render "signup.html"))
+        (response/redirect "/login"))))))
 
 (defroutes home-routes
   (GET   "/"        []       (home-page))
   (GET   "/about"   []       (about-page))
+  (GET   "/login"   []       (login-page))
+  (POST  "/login"   [& form] (login-page form))
+  (ANY   "/logout"  []       (logout))
   (GET   "/signup"  []       (signup-page))
-  (POST  "/signup"  [& form] (signup-page-submit form))
-  (GET   "/signup-success" [] (str "success!")))
+  (POST  "/signup"  [& form] (signup-page form)))
