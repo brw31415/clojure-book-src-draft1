@@ -1,5 +1,6 @@
 (ns hipstr.routes.test-routes
-  (:require [compojure.core :refer :all]))
+  (:require [compojure.core :refer :all]
+            [noir.cookies :as cookies]))
 
 (defn render-request-val [m & [k]]
   "Simply returns the value of key k in map m, if k is provided;

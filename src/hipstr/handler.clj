@@ -1,9 +1,9 @@
 (ns hipstr.handler
   (:require [compojure.core :refer [defroutes]]
+            [hipstr.routes.access :as access]
             [hipstr.routes.albums :refer [album-routes]]
             [hipstr.routes.home :refer [home-routes]]
             [hipstr.routes.test-routes :refer [test-routes]]
-            [hipstr.models.user-model :refer [is-authed?]]
             [hipstr.middleware :refer [load-middleware]]
             [hipstr.session-manager :as session-manager]
             [noir.response :refer [redirect]]
@@ -27,7 +27,7 @@
    an app server such as Tomcat
    put any initialization code here"
   []
-  (timbre/set-config! [:appenders :standard-out :min-level] :info)
+  (timbre/set-config! [:appenders :standard-out :min-level] :debug)
 
   (timbre/set-config!
    [:appenders :rolling]
@@ -51,14 +51,14 @@
 
 (def app (app-handler
            ;; add your application routes here
-           [album-routes home-routes base-routes test-routes]
+           [album-routes home-routes base-routes]
            ;; add custom middleware here
            :middleware (load-middleware)
            ;; timeout sessions after 30 minutes
            :session-options {:timeout (* 60 30)
                              :timeout-response (redirect "/")}
            ;; add access rules here
-           :access-rules [{:redirect "/login" :rule is-authed?}]
+           :access-rules access/rules
            ;; serialize/deserialize the following data formats
            ;; available formats:
            ;; :json :json-kw :yaml :yaml-kw :edn :yaml-in-html

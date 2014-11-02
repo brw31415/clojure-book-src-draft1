@@ -40,6 +40,9 @@
                                           :albums (album/get-by-artist {:artist artist})}))
 
 (defroutes album-routes
-  (GET "/albums/recently-added" [] (restricted (recently-added-page)))
+  (GET  "/albums/recently-added" [] (restricted (recently-added-page)))
   (POST "/albums/recently-added" [& album-form] (restricted (recently-added-submit album-form)))
-  (GET "/albums/:artist" [artist] (albums-by-artist-page artist)))
+  (GET  "/albums/:artist" [artist] (albums-by-artist-page artist))
+  (GET  "/just-for-you" [] (restricted "foo"))
+  (GET  "/and-maybe-you" [] (restricted "foo"))
+  (GET  "/session-cookie" [] (cookies/get "ring-session")))
