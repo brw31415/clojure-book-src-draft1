@@ -20,14 +20,17 @@
   (session/clear!))
 
 (defn auth-user
-  "Authenticates a user."
-  [credentials]
-  (let [user (first (get-user-by-username credentials))]
-    (if (and user (password/check (:password credentials) (:pass user)))
-      (session/put! :user_id (:user_id user))
-      (dissoc user :pass))))
+  "Validates a username/password and, if they match, adds the user_id to the session and returns the user map from
+  the database. Otherwise nil."
+  [username password]
+  (println "username " username " password " password)
+  (let [user (first (get-user-by-username {:username username}))]
+    (if (and user (password/check password (:pass user)))
+      (do
+        (session/put! :user_id (:user_id user))
+        (dissoc user :pass)))))
 
 (defn is-authed?
   "Returns false if the current user is anonymous; otherwise true."
   [_]
-  (not (= nil (session/get :user_id))))
+  (not (nil? (session/get :user_id))))

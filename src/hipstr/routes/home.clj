@@ -17,13 +17,13 @@
 
 (defn login-page
   ([]
-  (layout/render "login.html" {:username (cookies/remember-me)}))
+   (layout/render "login.html" {:username (cookies/remember-me)}))
   ([credentials]
-   (if (u/auth-user credentials)
-     (do
-       (cookies/remember-me (if (:remember-me credentials)
-                              (:username credentials)
-                              ""))
+   (println credentials)
+   (if (apply u/auth-user (map credentials [:username :password]))
+     (do (if (:remember-me credentials)
+           (cookies/remember-me (:username credentials))
+           (cookies/remember-me nil))
        (response/redirect "/albums/recently-added"))
      (layout/render "login.html" {:invalid-credentials? true}))))
 

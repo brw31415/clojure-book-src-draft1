@@ -1,6 +1,7 @@
 (ns hipstr.layout
   (:require [selmer.parser :as parser]
             [clojure.string :as s]
+            [hipstr.models.user-model :as user]
             [ring.util.response :refer [content-type response]]
             [compojure.response :refer [Renderable]]
             [environ.core :refer [env]]))
@@ -26,5 +27,5 @@
       "text/html; charset=utf-8")))
 
 (defn render [template & [params]]
-  (RenderableTemplate. template params))
+  (RenderableTemplate. template (assoc params :is-authed? (user/is-authed? nil))))
 
