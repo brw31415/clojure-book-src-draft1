@@ -18,7 +18,5 @@
          artist (or (first (get-artist-by-name artist-info {:connection tx}))
                     (insert-artist<! artist-info {:connection tx}))
          album-info (assoc album :artist_id (:artist_id artist))]
-     (timbre/info (str "artist: " artist))
-     (timbre/info (str "album-info: " album-info))
      (or (first (get-album-by-name album-info {:connection tx}))
          (insert-album<! album-info {:connection tx})))))

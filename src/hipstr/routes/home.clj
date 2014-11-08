@@ -19,7 +19,6 @@
   ([]
    (layout/render "login.html" {:username (cookies/remember-me)}))
   ([credentials]
-   (println credentials)
    (if (apply u/auth-user (map credentials [:username :password]))
      (do (if (:remember-me credentials)
            (cookies/remember-me (:username credentials))

@@ -23,7 +23,6 @@
   "Validates a username/password and, if they match, adds the user_id to the session and returns the user map from
   the database. Otherwise nil."
   [username password]
-  (println "username " username " password " password)
   (let [user (first (get-user-by-username {:username username}))]
     (if (and user (password/check password (:pass user)))
       (do
