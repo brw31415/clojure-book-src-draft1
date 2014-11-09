@@ -38,6 +38,7 @@
   "Gets the 10 most recently added albums in the db."
   []
   (select albums
+          (fields :album_id [:name :album_name] :release_date :create_date)
           (with artists (fields [:name :artist]))
           (order :create_date :DESC)
           (limit 10)))
@@ -51,13 +52,14 @@
 ;   art.name = :artist
 ; ORDER BY alb.release_date DESC
 (defn get-by-artist
-  "Gets the discography for a given artist.
-   @param artist - the name of the artist whose albums are to be retrieved."
+  "Gets the discography for a given artist."
+  ; To adhere to current interfaces and for "backwards compatability",
+  ; It is expected that the artist param is {:artist [artist name]}
   [artist]
   (select albums
           (join artists)
           (fields :albums.album_id :albums.name :albums.release_date)
-          (where {:artists.name artist})
+          (where {:artists.name (:artist artist)})
           (order :release_date :DESC)))
 
 ;-- name: insert-album<!
@@ -66,8 +68,16 @@
 ;VALUES (:artist_id, :album_name, date(:release_date))
 (defn insert-album<!
   "Adds the album for the given artist to the database."
+  ; To adhere to current interfaces and for "backwards compatability",
+  ; it is expected the album param is {:artist_id :release_date :album_name :artist_name}
+  ; As such we'll have to rename the :album_name key and remove the :artist_name.
+  ; This is because korma will attempt to use all keys in the map when inserting,
+  ; and :artist_name will destroy us with rabid vitriol.
   [album]
-  (insert albums (values album)))
+  (let [album (-> (clojure.set/rename-keys album {:album_name :name})
+                  (dissoc :artist_name)
+                  (assoc :release_date (sqlfn date (:release_date album))))]
+    (insert albums (values album))))
 
 ; -- name: get-album-by-name
 ; -- Fetches the specific album from the database for a particular artist.
@@ -78,19 +88,48 @@
 ;   name = :album_name
 (defn get-album-by-name
   "Fetches the specific album from the database for a particular artist."
-  [artist_id album_name]
+  ; To adhere to current interfaces and for "backwards compatability",
+  ; It is expected the album param is {:artist_id :artist_name}
+  [album]
   (first
    (select albums
-          (where {:artist_id artist_id
-                  :name album_name}))))
+          (where {:artist_id (:artist_id album)
+                  :name (:artist_name album)}))))
+
+; -- name: insert-artist<!
+; -- Inserts a new artist into the database.
+; INSERT INTO artists(name)
+; VALUES (:artist_name)
+(defn insert-artist<!
+  "Inserts a new artist into the database."
+  ; To adhere to current interfaces and for "backwards compatability",
+  ; It is expected the artist param is {:artist_name}
+  [artist]
+  (let [artist (clojure.set/rename-keys artist {:artist_name :name})]
+    (insert artists (values artist))))
+
+; -- name: get-artist-by-name
+; -- Retrieves an artist from the database by name.
+; SELECT *
+; FROM artists
+; WHERE name=:artist_name
+(defn get-artist-by-name
+  "Retrieves an artist from the database by name."
+  ; To adhere to current interfaces and for "backwards compatability",
+  ; It is expected the artist_name param is {:artist_name [artist name]}
+  [artist_name]
+  (first
+   (select artists
+           (where {:name (:artist_name artist_name)}))))
 
 (defn add-album!
   "Adds a new album to the database."
-  ([album]
+  [album]
+  (transaction
    (let [artist-info {:artist_name (:artist_name album)}
          ; fetch or insert the artist record
-         artist (or (get-artist-by-name artist-info {:connection tx})
-                    (insert-artist<! artist-info {:connection tx}))
+         artist (or (get-artist-by-name artist-info)
+                    (insert-artist<! artist-info))
          album-info (assoc album :artist_id (:artist_id artist))]
-     (or (get-album-by-name album-info {:connection tx})
-         (insert-album<! album-info {:connection tx})))))
+     (or (get-album-by-name album-info)
+         (insert-album<! album-info)))))
