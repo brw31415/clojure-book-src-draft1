@@ -12,6 +12,7 @@
                  [environ "0.5.0"]
                  [im.chit/cronj "1.0.1"]
                  [noir-exception "0.2.2"]
+                 [korma "0.3.0"] ; a Clojre DSL for DB stuff.
                  [com.novemberain/validateur "2.3.1"]
                  [migratus "0.7.0"]                     ; used for db migrations
                  [yesql "0.5.0-beta3-SNAPSHOT"] ;[yesql "0.5.0-beta2"]                  ; a library for using SQL
@@ -45,5 +46,10 @@
                         [pjstadig/humane-test-output "0.6.0"]]
          :injections [(require 'pjstadig.humane-test-output)
                       (pjstadig.humane-test-output/activate!)]
-         :env {:dev true}}}
+         :env {:dev? true
+	             :db-classname "org.postgresql.Driver"
+               :db-subprotocol "postgresql"
+               :db-subname     "//localhost/postgres"
+               :db-user        "hipstr"
+               :db-password    "p455w0rd"}}}
   :min-lein-version "2.0.0")
