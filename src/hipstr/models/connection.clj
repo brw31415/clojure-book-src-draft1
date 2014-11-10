@@ -1,3 +1,4 @@
+
 (ns hipstr.models.connection
   (:require [environ.core :refer [env]])
   (:use korma.db))

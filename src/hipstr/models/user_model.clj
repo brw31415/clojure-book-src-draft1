@@ -5,9 +5,6 @@
             [yesql.core :refer [defqueries]])
   (:use [korma.core]))
 
-; herein lies thine DSL upon thee DSL, Korma
-(declare users)
-
 ; declare our users table, which in our hipstr application
 ; is pretty straight forward.
 ; For Korma, however, we have to define the primary key because
